@@ -7,7 +7,7 @@ from numba import prange, jit, parfors
 import matplotlib.pyplot as plt
 import os
 
-
+#  TODO aggiungere formato classe
 # %%
 # creating the generator for each image subset
 # ==================================================================
