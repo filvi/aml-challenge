@@ -1,7 +1,7 @@
 # %%
 import numpy as np
 import cv2
-<<<<<<< HEAD
+
 # %%
 
     # def visual_debug_orb(query_img, train_img):
@@ -133,7 +133,7 @@ import cv2
     # # %%
 
     # # %%
-=======
+
     # %%
 
         # def visual_debug_orb(query_img, train_img):
@@ -265,4 +265,4 @@ import cv2
         # # %%
 
         # # %%
->>>>>>> bfb4c1628f509c989ae7e606f6c31923e06d9fe7
+
