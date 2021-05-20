@@ -6,12 +6,10 @@ import cv2
 from img_manipolation import *
 from tqdm import tqdm
 import logging
-<<<<<<< HEAD
+
 from orb_processing import *
 logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
-=======
-#logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
->>>>>>> bfb4c1628f509c989ae7e606f6c31923e06d9fe7
+
 # %%
 # initialize the generator for the respective folders
 # ==============================================================================
@@ -248,17 +246,6 @@ Validation_Query    = Dataset(validation_query_path)
             # %%
             # counter = 0
             # all_files = Training.get_files()
-            # matches_list = []
             # for img in tqdm(Training.parse_image_path(color=False), total=Training.len_files(),  desc="Display all images"):
-            #     im1 = cv2.imread( os.path.join("dataset", "training", "1", "ec50k_00010003.jpg"))
-            #     im2 = cv2.imread(img)
-            #     temp_dict = {}
-                
-            #     a = return_distance(im1, im2)
-            #     print(a[0].distance)
-            #     print(a[1].distance)
-            #     print(a[50].distance)
-            #     print(a[-1].distance)
-            #     counter += 1
-            #     break
+
                 
