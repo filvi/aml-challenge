@@ -6,12 +6,9 @@ import cv2
 from img_manipolation import *
 from tqdm import tqdm
 import logging
-<<<<<<< HEAD
 from orb_processing import *
 logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
-=======
-#logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
->>>>>>> bfb4c1628f509c989ae7e606f6c31923e06d9fe7
+
 # %%
 # initialize the generator for the respective folders
 # ==============================================================================
