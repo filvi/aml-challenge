@@ -6,7 +6,6 @@ import cv2
 from img_manipolation import *
 from tqdm import tqdm
 import logging
-
 from orb_processing import *
 logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
 
