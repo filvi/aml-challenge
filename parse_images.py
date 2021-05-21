@@ -5,9 +5,9 @@ from pprint import pprint
 import cv2
 from img_manipolation import *
 from tqdm import tqdm
-import logging
-from orb_processing import *
-logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
+#import logging #JM commented because raises ValueError('Unrecognised argument(s): %s' % keys)
+#from orb_processing import *
+#logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
 
 # %%
 # initialize the generator for the respective folders
@@ -49,7 +49,7 @@ class Dataset:
             for d in prange(len(dirs)):
                 self.list_dirs.append(os.path.join(root, dirs[d]))
             for f in  prange(len(files)):
-                if not files[f].endswith('.DS_Store'):
+                if not files[f].endswith('.DS_Store') and not files[f].startswith('Icon'):
                     self.list_files.append(os.path.join(root, files[f]))
     # --------------------------------------------------------------------------
 
