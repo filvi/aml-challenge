@@ -5,9 +5,9 @@ from pprint import pprint
 import cv2
 from img_manipolation import *
 from tqdm import tqdm
-#import logging #JM commented because raises ValueError('Unrecognised argument(s): %s' % keys)
-#from orb_processing import *
-#logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
+import logging
+from orb_processing import *
+logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
 
 # %%
 # initialize the generator for the respective folders
@@ -41,15 +41,15 @@ class Dataset:
     # validation_gallery_path:  274 ns ± 9.12 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
     # validation_query_path:    269 ns ± 10.9 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
     # --------------------------------------------------------------------------
-    def __init__(self, mygenerator):
+    def __init__(self, dir_path): 
         self.list_dirs = []
         self.list_files = []
-        self.mygenerator = mygenerator
-        for root, dirs, files in self.mygenerator:
+        self.dir_path = dir_path
+        for root, dirs, files in self.dir_path:
             for d in prange(len(dirs)):
                 self.list_dirs.append(os.path.join(root, dirs[d]))
             for f in  prange(len(files)):
-                if not files[f].endswith('.DS_Store') and not files[f].startswith('Icon'):
+                if not files[f].endswith('.DS_Store'):
                     self.list_files.append(os.path.join(root, files[f]))
     # --------------------------------------------------------------------------
 
