@@ -100,29 +100,3 @@ def initialize_extractor(training_path):
     return(extractor) #initialized extractor with fit knn and scaler
 
 
-def main():
-    validation_gallery_path = os.walk(os.path.join("/Volumes/GoogleDrive/.shortcut-targets-by-id/0B5NgX9ua1kQkfmxseGVTVDVuSDROaU1EMFpZUTRvWU9pREx6eXJTSVBHLWFKYmVhT2R6Tjg/Applied Machine Learning LM Data Science/Challenge/dataset", "validation", "gallery"), topdown=False)
-    validation_query_path   = os.walk(os.path.join("/Volumes/GoogleDrive/.shortcut-targets-by-id/0B5NgX9ua1kQkfmxseGVTVDVuSDROaU1EMFpZUTRvWU9pREx6eXJTSVBHLWFKYmVhT2R6Tjg/Applied Machine Learning LM Data Science/Challenge/dataset", "validation", "query"), topdown=False)
-    training_path = os.walk(os.path.join("/Volumes/GoogleDrive/.shortcut-targets-by-id/0B5NgX9ua1kQkfmxseGVTVDVuSDROaU1EMFpZUTRvWU9pREx6eXJTSVBHLWFKYmVhT2R6Tjg/Applied Machine Learning LM Data Science/Challenge/dataset", "training"), topdown=False)
-    extractor = initialize_extractor(training_path)
-    
-    
-    gallimgs = Dataset(validation_gallery_path) 
-    qryimgs = Dataset(validation_query_path) 
-
-    # we get query features
-    query_features = extractor.extract_features(qryimgs.get_files())
-    query_features = extractor.scale_features(query_features)
-
-    # we get gallery features
-    gallery_features = extractor.extract_features(gallimgs.get_files())
-    gallery_features = extractor.scale_features(gallery_features)
-
-    print('--> Computed gallery and query features. Dimensions ', gallery_features.shape, query_features.shape)
-    pairwise_dist = spatial.distance.mahalanobis(query_features, gallery_features) #a distance matrix with nrows = nrows(input1), ncols = nrows(input2 is returned)
-    print('--> Computed distances and got c-dist matrix of dimensions {}'.format(pairwise_dist.shape))
-    
-
-
-if __name__ == '__main__':
-    main() #for debugging purposes 
