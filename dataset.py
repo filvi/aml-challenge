@@ -3,11 +3,11 @@ import os
 from numba import jit, prange
 from pprint import pprint
 import cv2
-from img_manipolation import *
+from img_manipulation import *
 from tqdm import tqdm
 import logging
-from orb_processing import *
-logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
+#from orb_processing import *
+#logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
 
 # %%
 # initialize the generator for the respective folders

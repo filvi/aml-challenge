@@ -1,21 +1,21 @@
 from collections import defaultdict
 
 def top_k_acc(topK, classes, match): #int, np.array, arr
-    # slicing the arr until k
-        match = match[:, :k]
+# slicing the arr until k
+    match = match[:, :k]
 
-        tot = match.shape[0] ##dim of the np array
-        cor = 0
-        for i, label in enumerate(classes):
-            #compute the accuracy 
-            cor+= np.any(label == match[i, :]).item()
-        acc = cor/tot
+    tot = match.shape[0] ##dim of the np array
+    cor = 0
+    for i, label in enumerate(classes):
+        #compute the accuracy 
+        cor+= np.any(label == match[i, :]).item()
+    acc = cor/tot
     return acc
 
 def query(distance_arr, path):
     for k in [1, 3, 10]:
-    topk_acc = topk_accuracy(query_classes, gallery_matches, k)
-    print('--> Top-{:d} Accuracy: {:.3f}'.format(k, topk_acc))
+        topk_acc = topk_accuracy(query_classes, gallery_matches, k)
+        print('--> Top-{:d} Accuracy: {:.3f}'.format(k, topk_acc))
     k_match = defaultdict(list)
     viz_indices = indices[29]
     top_1 = viz_indices[0]

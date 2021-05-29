@@ -6,7 +6,7 @@ Part of the image retrieval solution proposed by the Roosters team,
 AML course, University of Trento, May 2021. 
 """
 
-from parse_images import Dataset
+from dataset import Dataset
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 import tqdm

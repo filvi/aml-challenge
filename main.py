@@ -1,15 +1,15 @@
 from intro import greetings
 import argh
 import numpy as np
-import opencv as cv2
+import cv2
 import dataset 
 import os
 import img_manipulation
 import img_distances
 import query
 import json
-import sklearn.preprocessing import MinMaxScaler
-import sklearn.cluster import Kmeans
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.cluster import KMeans 
 import plotly as plt
 
 # displays the script title and the names of the partecipants
@@ -26,7 +26,8 @@ if __name__ == "__main__":
 
     # parsing directory and instances of dataset class
 
-    data_path = '/content/gdrive/MyDrive/dataset'
+    #data_path = '/content/gdrive/MyDrive/dataset'
+    data_path = '/Volumes/GoogleDrive/.shortcut-targets-by-id/0B5NgX9ua1kQkfmxseGVTVDVuSDROaU1EMFpZUTRvWU9pREx6eXJTSVBHLWFKYmVhT2R6Tjg/Applied Machine Learning LM Data Science/Challenge/dataset'
     training_path = os.path.join(data_path, 'training')
 
     validation_path = os.path.join(data_path, 'validation')
@@ -76,9 +77,7 @@ if __name__ == "__main__":
     features = cv2.ORB_create()
     
     # apply MinMaxScaler rescales the data set such that all feature values 
-    # are in the range [0, 1] as shown in the right panel below. However, 
-    # this scaling compress all inliers in the narrow range [0, 0.005] for 
-    # the transformed number of households.
+    # are in the range [0, 1]
 
     scaler = MinMaxScaler(feature_range=(0,1))
    
