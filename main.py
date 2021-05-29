@@ -2,7 +2,7 @@ from intro import greetings
 import argh
 import numpy as np
 import cv2
-import dataset 
+from dataset import dataset 
 import os
 import img_manipulation
 import img_distances
@@ -11,6 +11,7 @@ import json
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans 
 import plotly as plt
+from scipy.spatial import distance
 
 # displays the script title and the names of the partecipants
 greetings()
@@ -88,7 +89,7 @@ if __name__ == "__main__":
     # model
 
     # we define the feature extractor providing the model
-    extractor = FeatureExtractor(feature_extractor = features,
+    extractor = img_distances.FeatureExtractor(feature_extractor = features,
                                 model = kmeans,
                                 scale = scaler,
                                 out_dim = 21)
@@ -102,11 +103,11 @@ if __name__ == "__main__":
     extractor.fit_scaler(training_path)
 
     #we get query features
-    query_features = extractor.extract_features(qryimgs.get_list_files())
+    query_features = extractor.extract_features(query_path)
     query_features = extractor.scale_features(query_features)
 
     # we get gallery features
-    gallery_features = extractor.extract_features(gallimgs.get_list_files())
+    gallery_features = extractor.extract_features(gallery_path)
     gallery_features = extractor.scale_features(gallery_features)
 
     print(gallery_features.shape, query_features.shape)
@@ -140,7 +141,7 @@ if __name__ == "__main__":
         res = json.dumps(results)
         response = requests.post(url, res)
         result = json.loads(response.text)
-        print(f"accuracy is {result['results']}")
+        print("accuracy is {}".format(result['results']))
 
 
     url = "http://kamino.disi.unitn.it:3001/results/"
