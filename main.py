@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from intro import greetings
 import argh
 import numpy as np
