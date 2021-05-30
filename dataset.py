@@ -65,10 +65,14 @@ class Dataset:
 
     def len_dirs(self):
         return len(self.list_dirs)
+    
     def get_class(self):
         classes = []
-        for i in self.list_dirs:
-            classes.append(i.split(os.path.sep)[-1])
+        for i in self.list_files:
+            target = i.split(os.path.sep)[-2]
+            if target == "distractor":
+                target = -1
+            classes.append(target)
         return np.array(classes)
     # --------------------------------------------------------------------------
     

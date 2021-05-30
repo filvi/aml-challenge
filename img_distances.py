@@ -7,6 +7,7 @@ AML course, University of Trento, May 2021.
 """
 
 from dataset import Dataset
+from img_manipulation import *
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 import tqdm
@@ -17,20 +18,38 @@ import os
 
 class FeatureExtractor(): 
 
-    def __init__(self, feature_extractor, model, scale=None,
-                 subsample=100):
+    def __init__(self, 
+                feature_extractor, 
+                model, 
+                scale=None,
+                subsample=100):
 
         self.feature_extractor = feature_extractor
         self.model = model
         self.scale = scale
         self.subsample = subsample
 
-    def get_descriptor(self, img_path): #broken
+    def get_descriptor(self, 
+                       img_path, 
+                       img_man=False, 
+                       fn=None, 
+                       **kwargs):
         """
         Returns descriptor vector associated to a given image 
+        :img_man: True if active 
+        :fn: The function of img_manipulation to be called
+        :**kwargs: the fn's function parameters from img_manipulation file
+
         """
-        img = cv2.imread(img_path)
+        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        
+        # passing the function to manipulate the image as parameter in get_descriptor
+        # passing also eventual switches for the custom function fn called
+        if img_man:
+            fn(img, **kwargs)
+
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
         kp, descs = self.feature_extractor.detectAndCompute(img, None)
         return descs
 
