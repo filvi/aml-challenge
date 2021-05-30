@@ -6,3 +6,4 @@ train/
 test/
 dataset/
 processed/
+fake_exam/

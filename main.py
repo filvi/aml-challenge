@@ -24,7 +24,7 @@ def challenge():
 
     #data_path = '/content/gdrive/MyDrive/dataset'
     # data_path = '/Volumes/GoogleDrive/.shortcut-targets-by-id/0B5NgX9ua1kQkfmxseGVTVDVuSDROaU1EMFpZUTRvWU9pREx6eXJTSVBHLWFKYmVhT2R6Tjg/Applied Machine Learning LM Data Science/Challenge/dataset'
-    data_path = 'dataset' # TODO dare la scelta all'utente di caricare il path che vuole
+    data_path = 'fake_exam' # TODO dare la scelta all'utente di caricare il path che vuole
     training_path = os.path.join(data_path, 'training')
 
     validation_path = os.path.join(data_path, 'validation')
@@ -135,12 +135,18 @@ def challenge():
         for j in range(indices.shape[1]):
             if mycounter == 10:
                 break
-            gallery_matches.append(all_gallery_path[indices[i][j]]) #append the image names in an order that reflects the distance with the i th qry image
+            img_path = all_gallery_path[indices[i][j]]  
+            img_name = img_path.split(os.path.sep)[-1]  
+            gallery_matches.append(img_name) #append the image names in an order that reflects the distance with the i th qry image
+
+            query_img_name = all_query_path[i]
+            query_img_name = query_img_name.split(os.path.sep)[-1]  
+
             mycounter += 1
-        matches[all_query_path[i]] = gallery_matches
+
+        matches[query_img_name] = gallery_matches
     
-    # todo sistemare qui che deve essere solo l'immagine non il path
-    pprint(matches)
+    
 
     # validation
 
