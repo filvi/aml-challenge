@@ -17,7 +17,7 @@ import os
 
 class FeatureExtractor(): 
 
-    def __init__(self, feature_extractor, model, out_dim=20, scale=None,
+    def __init__(self, feature_extractor, model, scale=None,
                  subsample=100):
 
         self.feature_extractor = feature_extractor
@@ -39,7 +39,7 @@ class FeatureExtractor():
         training_feats = []
         # we extact ORB descriptors
         for img_path in  data_list: #tqdm(data_list, desc='Fit extraction'): #data_list is enumerable containing paths
-            print('Analyzing image at location: {}'.format(img_path))
+            print('Analyzing image at location: {}'.format(img_path)+ 20*" ", end="\r")
             descs = self.get_descriptor(img_path)
             if descs is None:
                 continue
@@ -50,6 +50,7 @@ class FeatureExtractor():
 
             training_feats.append(descs)
         training_feats = np.concatenate(training_feats)
+        print(" "* 100) # clear the buffer of  end="\r"
         print('--> Model trained on {} features'.format(training_feats.shape))
         # we fit the model
         self.model.fit(training_feats)
@@ -58,6 +59,7 @@ class FeatureExtractor():
 
     def fit_scaler(self, data_list):
         features = self.extract_features(data_list)
+        print(" "* 100) # clear the buffer of  end="\r"
         print('--> Scale trained on {}'.format(features.shape))
         self.scale.fit(features)
         print('--> Scale fit')
@@ -68,7 +70,7 @@ class FeatureExtractor():
         features = np.zeros((len(data_list), self.model.n_clusters))
         i=-1
         for img_path in data_list: #enumerate(tqdm(data_list, desc='Extraction')):
-            print('Analyzing image at location: {}'.format(img_path))
+            print('Analyzing image at location: {}'.format(img_path) + 20*" ", end="\r")
             i+=1
             # get descriptor
             descs = self.get_descriptor(img_path)

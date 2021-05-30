@@ -65,6 +65,11 @@ class Dataset:
 
     def len_dirs(self):
         return len(self.list_dirs)
+    def get_class(self):
+        classes = []
+        for i in self.list_dirs:
+            classes.append(i.split(os.path.sep)[-1])
+        return np.array(classes)
     # --------------------------------------------------------------------------
     
     
@@ -86,6 +91,8 @@ class Dataset:
     def parse_image(self, color=False):
         for i in prange(len(self.list_files)):
             img = cv2.imread(self.list_files[i], cv2.IMREAD_COLOR)
+            if not color:	
+                img = cv2.cvtColor(originalImage, cv2.COLOR_BGR2GRAY)    
             yield img
     # --------------------------------------------------------------------------
     

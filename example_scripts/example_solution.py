@@ -214,7 +214,8 @@ def main():
         indices = np.random.randint(len(gallery_paths),
                                     size=(len(query_paths),len(gallery_paths)))
     
-
+    # sei scomparso da Zoom, ora vedo solo la tua sedia
+    
     gallery_matches = gallery_classes[indices]
     
     print('########## RESULTS ##########')
