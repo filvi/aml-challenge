@@ -15,6 +15,7 @@ from pprint import pprint
 from sklearn.cluster import KMeans 
 import plotly as plt
 from scipy.spatial import distance
+import time
 
 # %%
 # displays the script title and the names of the partecipants
@@ -25,6 +26,7 @@ greetings()
 # parsing directory and instances of dataset class
 
 # %%
+start = time.time()
 def challenge():
     data_path = 'dataset' # TODO dare la scelta all'utente di caricare il path che vuole
     training_path = os.path.join(data_path, 'training')
@@ -135,13 +137,9 @@ def challenge():
     for i in range(indices.shape[0]):#iterate over rows: qry
         gallery_matches = []
         for j in range(indices.shape[1]):#iterate over columns
-            finalmatrix[i][j] = gallery_classes[indices[i][j]]  
+            finalmatrix[i][j] = gallery_classes[indices[i][j]] 
+    print(finalmatrix) 
 
-
-
-
-    # %%
-    # %%
 
 
     # TODO non funziona ancora    
@@ -184,9 +182,11 @@ def challenge():
 # %%
 
 
-# todo salvare il modello?
-# todo inserire parte di manipolazione immagini
-# todo impostare il CLI
+# FUTURE salvare il modello?
+# CHECK inserire parte di manipolazione immagini
+# TODO impostare il CLI
 
 if __name__ == "__main__":
     challenge()
+    end = time.time()
+    print(f"total time: {end - start}")

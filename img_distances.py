@@ -12,7 +12,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 import tqdm
 from sklearn.cluster import KMeans, DBSCAN, MiniBatchKMeans
-
+import itertools
 import cv2
 import os
 
@@ -22,12 +22,14 @@ class FeatureExtractor():
                 feature_extractor, 
                 model, 
                 scale=None,
-                subsample=100):
+                subsample=100,
+                img_man=False):
 
         self.feature_extractor = feature_extractor
         self.model = model
         self.scale = scale
         self.subsample = subsample
+        self.img_man = img_man
 
     def get_descriptor(self, 
                        img_path, 
@@ -37,37 +39,68 @@ class FeatureExtractor():
         """
         Returns descriptor vector associated to a given image 
         :img_man: True if active 
-        :fn: The function of img_manipulation to be called
+        :fn: The function of img_manipulation to be called one of the following
+        ->  pick_color_channel(image, channel)
+        ->  noise_over_image(image, prob=0.01)
+        ->  fakehdr(image, alpha=-100, beta=355, preset=None)
+        ->  enhance_features(img, val1, val2, inverse=True)
+        
         :**kwargs: the fn's function parameters from img_manipulation file
-
         """
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         
         # passing the function to manipulate the image as parameter in get_descriptor
         # passing also eventual switches for the custom function fn called
         if img_man:
-            fn(img, **kwargs)
+            img = fn(img, **kwargs)
 
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         kp, descs = self.feature_extractor.detectAndCompute(img, None)
         return descs
 
-
+    # TODO inserire tqdm
     def fit_model(self, data_list):
         training_feats = []
+        # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        temp_fn  = [
+            pick_red_channel,
+            pick_green_channel,
+            pick_blue_channel,
+            noise_over_image,
+            fakehdr,
+            enhance_features]
+        # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
         # we extact ORB descriptors
         for img_path in  data_list: #tqdm(data_list, desc='Fit extraction'): #data_list is enumerable containing paths
             print('Analyzing image at location: {}'.format(img_path)+ 20*" ", end="\r")
-            descs = self.get_descriptor(img_path)
-            if descs is None:
-                continue
+        
+            # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             
-            if self.subsample:
-                sub_idx = np.random.choice(np.arange(descs.shape[0]), self.subsample)
-                descs = descs[sub_idx, :]
+            for f in temp_fn:
+                descs = self.get_descriptor(img_path, img_man=True, fn=f)
+                if descs is None:
+                    continue
+                
+                if self.subsample:
+                    sub_idx = np.random.choice(np.arange(descs.shape[0]), self.subsample)
+                    descs = descs[sub_idx, :]
 
-            training_feats.append(descs)
+                training_feats.append(descs)
+            # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        
+
+            # descs = self.get_descriptor(img_path)
+            # if descs is None:
+            #     continue
+            
+            # if self.subsample:
+            #     sub_idx = np.random.choice(np.arange(descs.shape[0]), self.subsample)
+            #     descs = descs[sub_idx, :]
+
+            # training_feats.append(descs)
+
+
         training_feats = np.concatenate(training_feats)
         print(" "* 100) # clear the buffer of  end="\r"
         print('--> Model trained on {} features'.format(training_feats.shape))

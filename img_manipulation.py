@@ -10,7 +10,7 @@ import os
 # %%
 # creating the generator for each image subset
 # ==================================================================
-def pick_color_channel(image, channel):
+def pick_color_channel(image, channel): 
 
     """
     This function allows you to manually pick a color channel for the image `img`
@@ -36,7 +36,12 @@ def pick_color_channel(image, channel):
         raise ValueError("The channel specified in `pick_color_channel(image, channel)` is incorrect.\nPlease use one of the following: `r` `g` `b`")
 # ==============================================================================
 
-
+def pick_red_channel(image):
+    return pick_color_channel(image, "r")
+def pick_green_channel(image):
+    return pick_color_channel(image, "g")
+def pick_blue_channel(image):
+    return pick_color_channel(image, "b")
 
 
 # %%
@@ -137,7 +142,7 @@ def visual_fakehdr_debug(img):
 
 # %%
 
-def enhance_features(img, val1, val2, inverse=True):
+def enhance_features(img, val1=5, val2=7, inverse=True): #TODO 5 7 debug value
     kernel1 = np.ones((val1,val1),np.float32)/val1**2
     dst1 = cv2.filter2D(img,-1,kernel1)
     kernel2 = np.ones((val2,val2),np.float32)/val2**2
