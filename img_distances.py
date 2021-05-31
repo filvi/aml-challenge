@@ -48,6 +48,8 @@ class FeatureExtractor():
         :**kwargs: the fn's function parameters from img_manipulation file
         """
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        img = cv2.resize(img, (250,250))
+
         
         # passing the function to manipulate the image as parameter in get_descriptor
         # passing also eventual switches for the custom function fn called
