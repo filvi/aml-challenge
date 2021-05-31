@@ -63,7 +63,7 @@ def challenge():
     len(gallery.get_files())
     # %%
     # we define the feature extractor providing the model
-    extractor = img_distances.FeatureExtractor(feature_extractor = features,
+    extractor = FeatureExtractor(feature_extractor = features,
                                 model = kmeans,
                                 scale = scaler)
 
