@@ -62,22 +62,23 @@ class FeatureExtractor():
     # TODO inserire tqdm
     def fit_model(self, data_list):
         training_feats = []
-        # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-        temp_fn  = [
+        
+        # We create a list  with all the function to be applied to each image in the dataset to use it later on
+        img_man_methods  = [
             pick_red_channel,
             pick_green_channel,
             pick_blue_channel,
             noise_over_image,
             fakehdr,
             enhance_features]
-        # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        
         # we extact ORB descriptors
         for img_path in  data_list: #tqdm(data_list, desc='Fit extraction'): #data_list is enumerable containing paths
             print('Analyzing image at location: {}'.format(img_path)+ 20*" ", end="\r")
-        
-            # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             
-            for f in temp_fn:
+            # apply each img_manipulation function to the image and append it to training_feats
+            for f in img_man_methods:
+                # apply for each image each function of img_man_methods
                 descs = self.get_descriptor(img_path, img_man=True, fn=f)
                 if descs is None:
                     continue
