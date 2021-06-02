@@ -92,26 +92,49 @@ def challenge():
 
     # we sort matched indices
     indices = np.argsort(mahal_dist, axis=-1)
-    #gallery_matches = gallery_class[indices]
+    gallery_matches = gallery_class[indices]
+    
+    def topk_accuracy(gt_label, matched_label, k=1):
+
+        matched_label = matched_label[:, :k]
+        total = matched_label.shape[0]
+        correct = 0
+        for idx, label in enumerate(gt_label):
+            correct+= np.any(lable == matched_label[idx, :]).item()
+        acc_tmp = correct/total
+
+        return acc_tmp
+
+    print('########## Accuracy ##########')
+    
+    for k in [1, 3, 10]:
+        topk_acc = topk_accuracy(query_class, gallery_matches, k)
+        print('--> Top-{:d} Accuracy: {:.3f}'.format(k, topk_acc))
 
 
+    group = dict()
+    group['groupname'] = "Roosters"
+    query_arr = []
     # ottimo per la submission
     matches = dict()
-    for i in range(indices.shape[0]):
+    query_index = [2,3]
+    top_k = 10
+    #for i in range(indices.shape[0]):
+    for i in query_index:
         gallery_matches = []
-        
-        for j in range(indices.shape[1]):
-            
-            img_path = all_gallery_path[indices[i][j]]  
-            img_name = img_path.split(os.path.sep)[-1]  
+        for j in range(0,top_k):
+            img_path = all_gallery_path[indices[i][j]]
+            img_name = img_path.split(os.path.sep)[-1]
             gallery_matches.append(img_name) #append the image names in an order that reflects the distance with the i th qry image
-
             query_img_name = all_query_path[i]
-            query_img_name = query_img_name.split(os.path.sep)[-1]  
-
-
-
+            query_img_name = query_img_name.split(os.path.sep)[-1]
         matches[query_img_name] = gallery_matches
+
+
+    group["images"] = matches
+    #print(group)
+    
+    
     # %%
     gallery_classes = gallery.get_class()
     query_classes = gallery.get_class()
@@ -140,51 +163,6 @@ def challenge():
             finalmatrix[i][j] = gallery_classes[indices[i][j]] 
     print(finalmatrix) 
 
-
-
-    # TODO non funziona ancora    
-    # def topk_accuracy(gt_label, matched_label, k=1):...
-    # ########## RESULTS ##########
-    # ---------------------------------------------------------------------------
-    # TypeError                                 Traceback (most recent call last)
-    # c:\Users\the-machine\Desktop\AML\main.py in 
-    #      158 
-    #      159 for k in [1, 3, 10]:
-    # ---> 160     topk_acc = topk_accuracy(query_classes, gallery_matches, k)
-    #      161     print('--> Top-{:d} Accuracy: {:.3f}'.format(k, topk_acc))
-
-    # c:\Users\the-machine\Desktop\AML\main.py in topk_accuracy(gt_label, matched_label, k)
-    #       147 def topk_accuracy(gt_label, matched_label, k=1):
-    # ----> 148     matched_label = matched_label[:, :k]
-    #       149     total = matched_label.shape[0]
-    #       150     correct = 0
-    #       151     for q_idx, q_lbl in enumerate(gt_label):
-    # TypeError: list indices must be integers or slices, not tuple
-
-
-    # TODO sistemami
-    # def topk_accuracy(gt_label, matched_label, k=1):
-    #     matched_label = matched_label[:, :k]
-    #     total = matched_label.shape[0]
-    #     correct = 0
-    #     for q_idx, q_lbl in enumerate(gt_label):
-    #         correct+= np.any(q_lbl == matched_label[q_idx, :]).item()
-    #     acc_tmp = correct/total
-
-    #     return acc_tmp
-
-    # print('########## RESULTS ##########')
-
-    # for k in [1, 3, 10]:
-    #     topk_acc = topk_accuracy(query_classes, gallery_matches, k)
-    #     print('--> Top-{:d} Accuracy: {:.3f}'.format(k, topk_acc))
-
-# %%
-
-
-# FUTURE salvare il modello?
-# CHECK inserire parte di manipolazione immagini
-# TODO impostare il CLI
 
 if __name__ == "__main__":
     challenge()
