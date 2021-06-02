@@ -143,6 +143,8 @@ def challenge():
 
 
     url = "http://kamino.disi.unitn.it:3001/results/"
+    
+    submit(group, url)
 
     
     # %%
