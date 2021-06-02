@@ -71,8 +71,9 @@ class FeatureExtractor():
             pick_green_channel,
             pick_blue_channel,
             noise_over_image,
-            fakehdr,
-            enhance_features]
+            # fakehdr,
+            # enhance_features
+            ]
         
         # we extact ORB descriptors
         for img_path in  data_list: #tqdm(data_list, desc='Fit extraction'): #data_list is enumerable containing paths

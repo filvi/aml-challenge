@@ -49,13 +49,57 @@ The basic idea is that we generate a hash (or signature) of size k using the fol
 
 
 # we define training dataset
-training_path =os.path.join(".", "new_dataset", "training")
-validation_path = os.path.join(".", 'new_dataset', 'validation')
-print(training_path)
-print(validation_path)
+training_path =os.path.join(".", "dataset", "training")
+validation_path = os.path.join(".", 'dataset', 'validation')
+
 # we define validation dataset
 # gallery_path = os.path.join('new_dataset', 'validation', 'gallery')
 # query_path = os.path.join('new_dataset', 'validation', 'query')
+
+class Dataset(object):
+    def __init__(self, data_path):
+        self.data_path = data_path
+        assert os.path.exists(self.data_path), 'Insert a valid path!'
+
+        # get class list
+        self.data_classes = os.listdir(self.data_path)
+
+        # init mapping dict
+        self.data_mapping = {}
+
+        # populate mapping dict
+        for c, c_name in enumerate(self.data_classes):
+            temp_path = os.path.join(self.data_path, c_name)
+            temp_images = os.listdir(temp_path)
+
+            for i in temp_images:
+                img_tmp = os.path.join(temp_path, i)
+
+                if img_tmp.endswith('.jpg'):
+                    if c_name == 'distractor':
+                        self.data_mapping[img_tmp] = -1
+                    else:
+                        self.data_mapping[img_tmp] = int(c_name)
+
+        print('Loaded {:d} from {:s} images'.format(len(self.data_mapping.keys()),
+                                                    self.data_path))
+
+    def get_data_paths(self):
+        # returns a list of imgpaths and related classes
+        images = []
+        classes = []
+        for img_path in self.data_mapping.keys():
+            if img_path.endswith('.jpg'):
+                images.append(img_path)
+                classes.append(self.data_mapping[img_path])
+        return images, np.array(classes)
+
+
+    def num_classes(self):
+        # returns number of classes of the dataset
+        return len(self.data_classes)
+training_dataset = Dataset(data_path=training_path)
+
 
 
 
@@ -68,16 +112,18 @@ To get a set of transforms with default values that work pretty well in a wide r
 """
 
 tfms = get_transforms(
-    do_flip=False, # do_flip: if True the image is randomly flipped (default behavior)
-    flip_vert=False, # flip_vert: limit the flips to horizontal flips (when False) or to horizontal and vertical flips as well as 90-degrees rotations (when True)
-    max_rotate=0, # if not None, a random rotation between -max_rotate and max_rotate degrees is applied with probability p_affine
-    max_lighting=0, # if not None, a random lightning and contrast change controlled by max_lighting is applied with probability p_lighting 
-    max_zoom=1, # if not 1. or less, a random zoom between 1. and max_zoom is applied with probability p_affine
-    max_warp=0 # if not None, a random symmetric warp of magnitude between -max_warp and maw_warp is applied with probability p_affine
-)
+    do_flip=True, # do_flip: if True the image is randomly flipped 
+    flip_vert=False, # random apply horizontal flips
+    max_rotate=45, # random rotation between -max_rotate and max_rotate degrees is applied with probability p_affine
+    max_lighting=0.5, # a random lightning and contrast change controlled by max_lighting is applied with probability p_lighting 
+    max_zoom=1.2, # random zoom between 1. and max_zoom is applied with probability p_affine
+    max_warp=0.3, # a random symmetric warp of magnitude  is applied with probability p_affine
+    p_affine=0.75, 
+    p_lighting=0.75)
 
-
-
+data = ImageDataBunch.from_folder(training_path, train='train', valid='test', valid_pct=0.2, ds_tfms=get_transforms(), size=224)
+print('Number of classes {0}'.format(data.c))
+data.show_batch(rows=3, figsize=(10,6), hide_axis=False)
 # data_training = (ImageList.from_folder(training_path)
 #         .split_by_rand_pct(0.2)
 #         .label_from_folder()
@@ -85,49 +131,32 @@ tfms = get_transforms(
 #         .databunch(bs=64))
 
 
-data = ImageDataBunch.from_folder(training_path, validation_path, valid_pct=0.2, ds_tfms=get_transforms(), size=224)
+learn = cnn_learner(data, models.resnet34, pretrained=True, metrics=accuracy)
 
-# print('Number of classes {0}'.format(data_training.c))
+learn.fit_one_cycle(4)
+learn.save('stage1')
+learn.load('stage1')
 
-data_validation = (ImageList.from_folder(validation_path)
-        .label_from_folder()
-        .transform(tfms=tfms, size=224)
-        .databunch(bs=64))
+interp = ClassificationInterpretation.from_learner(learn)
+type(interp)
+fastai.train.ClassificationInterpretation
 
-## Show sample data
-data.show_batch(rows=3, figsize=(10,6), hide_axis=False)
+interp.plot_top_losses(9, figsize=(15,11), heatmap=False)
 
-"""### cnn_learner
-``` cnn_learner(dls, arch, normalize=True, n_out=None, pretrained=True, config=None, loss_func=None, opt_func=Adam, lr=0.001, splitter=None, cbs=None, metrics=None, path=None, model_dir='models', wd=None, wd_bn_bias=False, train_bn=True, moms=(0.95, 0.85, 0.95), cut=None, n_in=3, init=kaiming_normal_, custom_head=None, concat_pool=True, lin_ftrs=None, ps=0.5, first_bn=True, bn_final=False, lin_first=False, y_range=None) ```
-
-Build a convnet style learner from dls and arch
-
-The model is built from arch using the number of final activations inferred from dls if possible (otherwise pass a value to n_out). It might be pretrained and the architecture is cut and split using the default metadata of the model architecture (this can be customized by passing a cut or a splitter).
-
-If normalize and pretrained are True, this function adds a Normalization transform to the dls (if there is not already one) using the statistics of the pretrained model. That way, you won't ever forget to normalize your data in transfer learning.
-"""
-
-## Creating the model
-learn = cnn_learner(data, models.resnet50, pretrained=True, metrics=accuracy)
-
-## Fitting 3 epochs -> to increase only for test an Freezing layer 
-learn.fit_one_cycle(3)
+learn.lr_find()
+learn.recorder.plot()
 
 ## Unfreeing layer and finding ideal learning rate if I have a freezed layer I need to unfreeze it to update weights
 learn.unfreeze()
 
-"""### Train Model
-ResNet weights are already powerful enough to achieve high classification accuracy without needing a large number of epochs (we use only 3 in this case)
+learn.fit_one_cycle(2, slice(1e-5, 1e-2/5))
 
-"""
+learn.save('stage2')
 
-## Fitting 2 epochs
-learn.fit_one_cycle(3)
 
-## Saving model weights
-learn.save('stg2-rn34')
+learner = learn.load('stage2')
 
-# hooks are used for saving intermediate computations
+
 class SaveFeatures():
     features=None
     def __init__(self, m): 
@@ -144,17 +173,14 @@ class SaveFeatures():
         
 sf = SaveFeatures(learn.model[1][5]) ## Output before the last FC layer
 
-"""Saving intermediate layer features can be extremely important in many cases. Obvious use cases include using cnn features as an input to another model, appending other features with the cnn features, training only the last few layers and freezing the previous layers etc.
 
-
-"""
 
 ## By running this feature vectors would be saved in sf variable initated above
 _= learn.get_preds(data.train_ds)
 _= learn.get_preds(DatasetType.Valid)
 
 #Converting in a dictionary of {img_path:featurevector}
-img_path = [str(x) for x in (list(data_training.train_ds.items)+list(data.valid_ds.items))]
+img_path = [str(x) for x in (list(data.train_ds.items)+list(data.valid_ds.items))]
 feature_dict = dict(zip(img_path,sf.features))
 
 
@@ -162,14 +188,6 @@ feature_dict = dict(zip(img_path,sf.features))
 with open('feature_dict.p', 'wb') as f:
     pickle.dump(feature_dict, f)
 
-## Exporting as pickle
-#pickle.dump(feature_dict, open(training_path/'feature_dict.p', 'wb'))
-
-"""here the documentation of LSHash
-[link text](https://pypi.org/project/lshash/)
-
-here Pickle [link text](https://docs.python.org/3/library/pickle.html)
-"""
 
 # Using Locality Sensitive hashing to find near similar images
 from tqdm.notebook import tqdm
@@ -212,47 +230,47 @@ def get_similar_items(idx, feature_dict, lsh_variable, n_items=10):
             k_img.append(tail)
     return k_img
 
-similar_img = get_similar_items(5, feature_dict, lsh, 10)
+def get_similar_item_vect(vect, feature_dict, lsh_variable, n_items=5):
+    response = lsh_variable.query(vect, 
+                     num_results=n_items+1, distance_func='hamming')
+    
+    columns = 8
+    rows = int(np.ceil(n_items+1/columns))
+    fig=plt.figure(figsize=(4*rows, 6*rows))
+    k_img = []
+    for i in range(1, columns*rows +1):
+        if i<n_items+2:
+            img = Image.open(response[i-1][0][1])
+            fig.add_subplot(rows, columns, i)
+            plt.imshow(img)
+            head, tail = os.path.split(response[i-1][0][1])
+            k_img.append(tail)
+    return k_img
+    
 
-from os import listdir
-from os.path import isfile, join
-query_files = [f for f in listdir(query_path) if isfile(join(query_path, f))]
-len(query_files)
+vec_query = []
+
+_ = learner.predict(open_image(query_path +'/18/ec50k_00180056.jpg'))
+vec_query.append(sf.features[-1])
+
+_ = learner.predict(open_image(query_path +'/12/ec50k_00120010.jpg'))
+vec_query.append(sf.features[-1])
+#similar_img = get_similar_item_vect(vect, feature_dict, lsh, 10)
+## Exporting as pickle
+#pickle.dump(feature_dict, open(training_path/'feature_dict.p', 'wb'))
 
 
 
-img_name = query_files[4]
-path = query_path + img_name
-img = Image.open(path)
-plt.imshow(img)
+query_img = ['/18/ec50k_00180056.jpg', '/12/ec50k_00120010.jpg']
 
-_ = learner.predict(open_image(path))
-vect = sf.features[-1]
-similar_img = get_similar_items(vect, feature_dict, lsh, 10)
-
-similar_img
-
+res = dict()
 group = dict()
 group['groupname'] = "Roosters"
 
-res = dict()
-query_arr = [2, 6, 8]
-for val in query_arr:
-    similar_img = get_similar_item(0, feature_dict, lsh, 10)
-    head, tail = os.path.split(img_path[val])
-    res[tail] = similar_img
+for val in query_img:
+  _ = learner.predict(open_image(query_path + val))
+  vec = (sf.features[-1])
+  res[val] = similar_img = get_similar_item_vect(vect, feature_dict, lsh, 10)
 
 group["images"] = res
 group
-
-group
-
-"""  def submit(results, url):
-        res = json.dumps(results)
-        response = requests.post(url, res)
-        result = json.loads(response.text)
-        print(f"accuracy is {result['results']}")
-
-
-    url = "http://kamino.disi.unitn.it:3001/results/"
-    submit(group, url) """

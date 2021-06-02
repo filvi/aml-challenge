@@ -100,7 +100,7 @@ def challenge():
         total = matched_label.shape[0]
         correct = 0
         for idx, label in enumerate(gt_label):
-            correct+= np.any(lable == matched_label[idx, :]).item()
+            correct+= np.any(label == matched_label[idx, :]).item()
         acc_tmp = correct/total
 
         return acc_tmp
