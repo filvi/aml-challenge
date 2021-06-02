@@ -133,7 +133,19 @@ def challenge():
 
     group["images"] = matches
     #print(group)
+    # submit function
+
+    def submit(results, url):
+        res = json.dumps(results)
+        response = requests.post(url, res)
+        result = json.loads(response.text)
+        print("accuracy is {}".format(result['results']))
+
+
+    url = "http://kamino.disi.unitn.it:3001/results/"
     
+    submit(group, url)
+
     
     # %%
     gallery_classes = gallery.get_class()
