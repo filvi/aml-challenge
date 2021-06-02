@@ -15,19 +15,25 @@ Original file is located at
 # %matplotlib inline
 
 import pandas as pd
+import numpy
 import pickle
 import numpy as np
+import bitarray
+from lshashpy3 import LSHash #A fast Python implementation of locality sensitive hashing with persistance support.
+# from lshash3  import LSHash #A fast Python implementation of locality sensitive hashing with persistance support.
+
+# python -c "import lshashpy3 as lshash; print(lshash.__version__);"
+import lshashpy3 as lshash
+# import lshash3  as lshash
+
 from fastai.vision import *
+# from fastai.callback.hook import *
 from fastai.callbacks.hooks import *
 import matplotlib.pyplot as plt
 from PIL import Image
 import tqdm
-import bitarray
 import os
 pd.set_option('display.max_columns', 500)
-
-import lshashpy3 as lshash
-
 """Generally-speaking, a common and basic building block for implementing sublinear time algorithms are hash functions. A hash function is any function that maps input into data of fixed size (usually of lower dimension). The most famous example, which you might have encountered by simply downloading files off the internet, is that of checksum hashes. The idea behind them is to generate a “finger-print” — i.e, some number that is hopefully unique for a particular chunk of data — that can be used to verify that the data was not corrupted or tampered with when it was transferred from one place to another.
 
 checksum hash: good for exact duplicate detetction
@@ -36,22 +42,22 @@ This is precisely what Locality Sensitive Hashing (LSH) attempts to address. As 
 The basic idea is that we generate a hash (or signature) of size k using the following procedure: we generate k random hyperplanes; the i-th coordinate of the hash value for an item x is binary: it is equal to 1 if and only if x is above the i-th hyperplane.
 """
 
-from lshashpy3 import LSHash #A fast Python implementation of locality sensitive hashing with persistance support.
 
-from google.colab import drive
-drive.mount('/content/gdrive', force_remount=True)
 
-cd /content/gdrive/MyDrive/dataset
+# drive.mount('/content/gdrive', force_remount=True)
+
+
 
 # we define training dataset
-training_path = os.path.join('/content/gdrive/MyDrive/dataset', 'training')
-
+training_path =os.path.join(".", "new_dataset", "training")
+validation_path = os.path.join(".", 'new_dataset', 'validation')
+print(training_path)
+print(validation_path)
 # we define validation dataset
-validation_path = os.path.join('/content/gdrive/MyDrive/dataset', 'validation')
-gallery_path = os.path.join('/content/gdrive/MyDrive/dataset/validation', 'gallery')
-query_path = os.path.join('/content/gdrive/MyDrive/dataset/validation', 'query')
+# gallery_path = os.path.join('new_dataset', 'validation', 'gallery')
+# query_path = os.path.join('new_dataset', 'validation', 'query')
 
-query_path
+
 
 """**FASTAI** provides a complete image transformation library written from scratch in PyTorch. Although the main purpose of the library is data augmentation for use when training computer vision models, you can also use it for more general image transformation purposes. Before we get in to the detail of the full API, we'll look at a quick overview of the data augmentation pieces that you'll almost certainly need to use.
 
@@ -69,15 +75,19 @@ tfms = get_transforms(
     max_zoom=1, # if not 1. or less, a random zoom between 1. and max_zoom is applied with probability p_affine
     max_warp=0 # if not None, a random symmetric warp of magnitude between -max_warp and maw_warp is applied with probability p_affine
 )
-data_training = (ImageList.from_folder(training_path)
-        .split_by_rand_pct(0.2)
-        .label_from_folder()
-        .transform(tfms=tfms, size=224)
-        .databunch(bs=64))
+
+
+
+# data_training = (ImageList.from_folder(training_path)
+#         .split_by_rand_pct(0.2)
+#         .label_from_folder()
+#         .transform(tfms=tfms, size=224)
+#         .databunch(bs=64))
+
 
 data = ImageDataBunch.from_folder(training_path, validation_path, valid_pct=0.2, ds_tfms=get_transforms(), size=224)
 
-print('Number of classes {0}'.format(data_training.c))
+# print('Number of classes {0}'.format(data_training.c))
 
 data_validation = (ImageList.from_folder(validation_path)
         .label_from_folder()
