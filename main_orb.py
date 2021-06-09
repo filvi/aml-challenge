@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-from intro import greetings
 import numpy as np
 import cv2
-from dataset import Dataset 
 import os
-import img_manipulation
-import img_distances
-import query 
 import json
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from pprint import pprint
 from sklearn.cluster import KMeans 
+from assets.intro import greetings
+from assets.dataset import Dataset 
+import assets.img_manipulation
+import assets.img_distances
+import assets.query 
 
 from scipy.spatial import distance
 import time
@@ -59,7 +58,7 @@ def challenge():
 
     len(gallery.get_files())
     # we define the feature extractor providing the model
-    extractor = img_distances.FeatureExtractor(feature_extractor = features,
+    extractor = assets.img_distances.FeatureExtractor(feature_extractor = features,
                                 model = kmeans,
                                 scale = scaler)
 

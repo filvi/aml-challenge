@@ -6,8 +6,11 @@ Part of the image retrieval solution proposed by the Roosters team,
 AML course, University of Trento, May 2021. 
 """
 
-from dataset import Dataset
-from img_manipulation import *
+
+
+from assets.dataset import Dataset
+from assets.img_manipulation import *
+    
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 import tqdm

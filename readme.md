@@ -25,7 +25,7 @@ Each image is altered in this way for enhancing the detection of the algorithm:
 - `noise_over_image`: img (np array), Noise over Image
     - **Options**: prob (float) = the chance to overwrite some random pixel with white or black to create salt and pepper noise
     - **Rationale**: The idea is to avoid overfitting introducing random noise
-    - **Enhancement**: Using Numba that allows to compile the code, parallelize the operation and exit from the GIL (Global Interpreter Lock) of python and using all the available threads in the process ![CPU usage](CPU_usage.png)
+    - **Enhancement**: Using Numba that allows to compile the code, parallelize the operation and exit from the GIL (Global Interpreter Lock) of python and using all the available threads in the process ![CPU usage](assets/CPU_usage.png)
 - `fakehdr`: Fake HDR
     - **Options**: img (np array), alpha (int), beta (int), preset (str = "dark" | "light") alpha and beta are the value in which normalize the pixel value, it enhance the shadows or the lights. The presets are quick way to define the aspected result
     - **Rationale**: The idea is to avoid overfitting introducing brightness variance and 
