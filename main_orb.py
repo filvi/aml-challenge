@@ -140,7 +140,7 @@ def challenge():
     url = "http://ec2-18-191-24-254.us-east-2.compute.amazonaws.com/competition/"
     
     
-    # submit(group, url) 
+    submit(group, url) 
 
     
 

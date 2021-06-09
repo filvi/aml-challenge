@@ -67,12 +67,12 @@ class FeatureExtractor():
         
         # We create a list  with all the function to be applied to each image in the dataset to use it later on
         img_man_methods  = [
-            # pick_red_channel,
-            # pick_green_channel,
-            # pick_blue_channel,
-            # noise_over_image,
-            # fakehdr,
-            # enhance_features
+            pick_red_channel,
+            pick_green_channel,
+            pick_blue_channel,
+            noise_over_image,
+            fakehdr,
+            enhance_features
             ] 
         
         # we extact ORB descriptors
