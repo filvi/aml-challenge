@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,50 +9,69 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
     <style>
-        html,body {
-            height:100%;
+        html,
+        body {
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             background-color: #2e3848;
         }
-        h4{
-            margin:0;
+
+        h4 {
+            margin: 0;
         }
 
-        img{
-            margin-left:auto;
-            margin-right:auto;
+        img {
+            margin-left: auto;
+            margin-right: auto;
         }
-        .btn{
-            border-radius: 50px;
-            background: #2e3848;
-            box-shadow:  20px 20px 60px #27303d,
-                        -20px -20px 60px #354053;
-        }
-        .logo{
-            color:#dce6f6;
+
+
+        .logo {
+            color: #f5f8fd;
             font-size: 2rem;
         }
-        .people{
+
+        .people {
 
             font-family: 'Raleway', sans-serif;
-            color:#9cabc3;
+            color: #c7c7c7;
             margin-bottom: 5rem;
         }
-        .subtitle{
-            color:#9cabc3;
+
+        .subtitle {
             font-family: 'Raleway', sans-serif;
             margin-bottom: 3rem;
+            color: #aac6f3;
         }
-        pre{
+        
+        pre {
             text-justify: center;
-            margin:0 auto;          
-            
+            margin: 0 auto;
+
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+        }
+        .col{
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-left: 2rem;
+            margin-right: 2rem;
+        }
+        a>img{
+            max-height: 80px;
         }
     </style>
 </head>
+
 <body>
     <div class="logo">
         <pre>
@@ -61,13 +81,27 @@
       / _, _/ /_/ / /_/ (__  ) /_/  __/ /  (__  ) 
      /_/ |_|\____/\____/____/\__/\___/_/  /____/  
     </pre>
-</div>
+    </div>
     <h4 class="people">
-        Andrea Lomurno&nbsp;&nbsp;::&nbsp;&nbsp;Jacopo Mocellin&nbsp;&nbsp;::&nbsp;&nbsp;Tamara Quaranta&nbsp;&nbsp;::&nbsp;&nbsp;Filippo Vicari
+        Andrea Lomurno&nbsp;&nbsp;::&nbsp;&nbsp;Jacopo Mocellin&nbsp;&nbsp;::&nbsp;&nbsp;Tamara
+        Quaranta&nbsp;&nbsp;::&nbsp;&nbsp;Filippo Vicari
+        <!-- Ludovico Valenti [per la GPU] -->
     </h4>
-    <h2 class="subtitle">Download trained model</h2>
-    <a href="https://filippovicari.com/aml/AMLretrievalv1.pth" download style="text-justify: center;">
-    <img class="btn" src="download_icon.svg" alt="download icon" >
-    </a>
+    <div class="row">
+        <div class="col">
+            <h2 class="subtitle color1">Download trained model</h2>
+            <a href="https://filippovicari.com/aml/AMLretrievalv1.pth" download style="text-justify: center;">
+                <img class="btn" src="download_icon.svg" alt="download icon">
+            </a>
+        </div>
+        <div class="col">
+            <h2 class="subtitle color2">Download dataset</h2>
+            <a href="https://drive.google.com/drive/folders/1GQXHXVpZo0Ea_Hu0nHqc49KDj7-5BK_-?usp=sharing"
+                target="_blank" style="text-justify: center;">
+                <img class="btn" src="dataset.svg"download icon">
+            </a>
+        </div>
+    </div>
 </body>
+
 </html>
