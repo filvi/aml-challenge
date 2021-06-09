@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# %%
+
 import os
 from numba import jit, prange
 from pprint import pprint
@@ -10,7 +10,7 @@ import logging
 #from orb_processing import *
 #logging.basicConfig(filename='parse.log', encoding='utf-8', level=logging.INFO)
 
-# %%
+
 # initialize the generator for the respective folders
 # ==============================================================================
 training_path           = os.walk(os.path.join("dataset", "training"), topdown=False)
@@ -18,7 +18,7 @@ validation_gallery_path = os.walk(os.path.join("dataset", "validation", "gallery
 validation_query_path   = os.walk(os.path.join("dataset", "validation", "query"), topdown=False)
 
 
-# %%
+
 # Create the class for the Training and Validation instances
 # ==============================================================================
 class Dataset:
@@ -120,7 +120,7 @@ class Dataset:
 
 
 
-# %%
+
 
 # initialize the instance of the Dataset Class
 # JM needs an os.walk object as input
@@ -132,7 +132,7 @@ Validation_Query    = Dataset(validation_query_path)
 
 
 
-# %%
+
 # Debug pprint all files
 # ==============================================================================
 # Training.print_files()
@@ -149,114 +149,112 @@ Validation_Query    = Dataset(validation_query_path)
 # ==============================================================================
 
 
-
-        # # %%
-        # # Initial folder setup, create the folder structure to save the altered images
-        # # ==============================================================================
-        # def create_dir_structure(basedir, subdir=None, sub_subdir=None):
-        #     if not os.path.isdir(basedir):
-        #         os.mkdir(basedir)
-        #     if subdir != None:
-        #         if not os.path.isdir(os.path.join(basedir, subdir)):
-        #             os.mkdir(os.path.join(basedir, subdir))
-        #     if subdir != None and sub_subdir != None:
-        #         if not os.path.isdir(os.path.join(basedir, subdir, sub_subdir)):
-        #             os.mkdir(os.path.join(basedir, subdir, sub_subdir))
-        # # ==============================================================================
+# Initial folder setup, create the folder structure to save the altered images
+# ==============================================================================
+def create_dir_structure(basedir, subdir=None, sub_subdir=None):
+    if not os.path.isdir(basedir):
+        os.mkdir(basedir)
+    if subdir != None:
+        if not os.path.isdir(os.path.join(basedir, subdir)):
+            os.mkdir(os.path.join(basedir, subdir))
+    if subdir != None and sub_subdir != None:
+        if not os.path.isdir(os.path.join(basedir, subdir, sub_subdir)):
+            os.mkdir(os.path.join(basedir, subdir, sub_subdir))
+# ==============================================================================
 
 
-        # # %%
-        # # Create basic structure for storing the altered images for debug purpose
-        # # ==============================================================================
-        # def create_processed():
-        #     create_dir_structure("processed")
-        #     create_dir_structure("processed", "training")
-        #     create_dir_structure("processed", "validation")
-        #     create_dir_structure("processed", "validation", "gallery")
-        #     create_dir_structure("processed", "validation", "query")
-        # # ==============================================================================
-        # create_processed()
+# UNCOMMENT TO SAVE ALL IMAGES WITH TRANSFORMATION
+# # Create basic structure for storing the altered images for debug purpose
+# # ==============================================================================
+# def create_processed():
+#     create_dir_structure("processed")
+#     create_dir_structure("processed", "training")
+#     create_dir_structure("processed", "validation")
+#     create_dir_structure("processed", "validation", "gallery")
+#     create_dir_structure("processed", "validation", "query")
+# # ==============================================================================
+# create_processed()
 
-        # # example usage of the generator in file saving mode
-        # # ==============================================================================
-        # def save_all_images(myinstance):
-        #     counter = 0
-        #     failed = 0
-        #     all_files = myinstance.get_files()
-        #     for img in tqdm(myinstance.parse_image(color=False), total=myinstance.len_files(), desc="Save all images"):
-                
-        #         # extrapolate from the filename the new path replacing the folder name
-        #         # --------------------------------------------------------------------------
-        #         fname = all_files[counter].replace("dataset", "processed")
-        #         # --------------------------------------------------------------------------
-        #         # if the file exist skips incrementing the loop
-        #         # --------------------------------------------------------------------------
-        #         if os.path.isfile(fname):
-        #             counter += 1
-        #             continue
-        #         # --------------------------------------------------------------------------
+# # example usage of the generator in file saving mode
+# # ==============================================================================
+# def save_all_images(myinstance):
+#     counter = 0
+#     failed = 0
+#     all_files = myinstance.get_files()
+#     for img in tqdm(myinstance.parse_image(color=False), total=myinstance.len_files(), desc="Save all images"):
+        
+#         # extrapolate from the filename the new path replacing the folder name
+#         # --------------------------------------------------------------------------
+#         fname = all_files[counter].replace("dataset", "processed")
+#         # --------------------------------------------------------------------------
+#         # if the file exist skips incrementing the loop
+#         # --------------------------------------------------------------------------
+#         if os.path.isfile(fname):
+#             counter += 1
+#             continue
+#         # --------------------------------------------------------------------------
 
 
-        #         # The algorithm tries to save the image, if no subfolder is found it creates
-        #         # one and then try again to save the image
-        #         # --------------------------------------------------------------------------
-        #         try:
-        #             global_visual_debugger(img, savefig=True, fname=fname)
-        #             # logging.info(f'created visual debug for {fname}')
-        #         except:
-        #             sep_index = fname.rfind(os.path.sep)
-        #             splitted_fname = fname[sep_index:]
-        #             fpath = fname[:sep_index]
-        #             os.mkdir(fpath)
-        #             try:
-        #                 global_visual_debugger(img, savefig=True, fname=os.path.join(fpath,splitted_fname))
-        #                 # logging.info(f'created folder {fpath}')
-        #             except:
-        #                 logging.warning(f'Failed to save {splitted_fname} in {fpath}')
-        #                 failed +=1
-        #         # --------------------------------------------------------------------------
+#         # The algorithm tries to save the image, if no subfolder is found it creates
+#         # one and then try again to save the image
+#         # --------------------------------------------------------------------------
+#         try:
+#             global_visual_debugger(img, savefig=True, fname=fname)
+#             # logging.info(f'created visual debug for {fname}')
+#         except:
+#             sep_index = fname.rfind(os.path.sep)
+#             splitted_fname = fname[sep_index:]
+#             fpath = fname[:sep_index]
+#             os.mkdir(fpath)
+#             try:
+#                 global_visual_debugger(img, savefig=True, fname=os.path.join(fpath,splitted_fname))
+#                 # logging.info(f'created folder {fpath}')
+#             except:
+#                 logging.warning(f'Failed to save {splitted_fname} in {fpath}')
+#                 failed +=1
+#         # --------------------------------------------------------------------------
 
-        #         counter += 1
-        #     print(f"Process finished with {failed} operations, you can run again or take a look at parse.log file")
-        # # ==============================================================================
+#         counter += 1
+#     print(f"Process finished with {failed} operations, you can run again or take a look at parse.log file")
+# # ==============================================================================
 
 
 
-            # save_all_images(Training)
-            # save_all_images(Validation_Gallery)
-            # save_all_images(Validation_Query)
+# save_all_images(Training)
+# save_all_images(Validation_Gallery)
+# save_all_images(Validation_Query)
 
 
 
-            # # %%
-            # # example usage of the generator in file viewing mode
-            # # ==============================================================================
-            # def visualize_all_images():
-            #     counter = 0
-            #     all_files = Training.get_files()
-            #     for img in tqdm(Training.parse_image_path(color=False), total=Training.len_files(),  desc="Display all images"):
-            #         # pick_color_channel(img, "r")
-            #         # noise_over_image(img, prob=0.015)
-            #         # fakehdr(img, alpha=-100, beta=355, preset=None)
-            #         # visual_fakehdr_debug(img, preset="dark")
-            #         # visual_fakehdr_debug(img, alpha=-100, beta=355)
-            #         # global_visual_debugger(img)
+# 
+# # example usage of the generator in file viewing mode
+# # ==============================================================================
+# def visualize_all_images():
+#     counter = 0
+#     all_files = Training.get_files()
+#     for img in tqdm(Training.parse_image_path(color=False), total=Training.len_files(),  desc="Display all images"):
+#         # pick_color_channel(img, "r")
+#         # noise_over_image(img, prob=0.015)
+#         # fakehdr(img, alpha=-100, beta=355, preset=None)
+#         # visual_fakehdr_debug(img, preset="dark")
+#         # visual_fakehdr_debug(img, alpha=-100, beta=355)
+#         # global_visual_debugger(img)
 
-            #         img = cv2.imread(img)
-            #         # # global_visual_debugger(img)
-            #         # cv2.imshow('image',enhance_features(img, 5, 7, False) + enhance_features(img, 2, 4, True))
-            #         # cv2.waitKey(0)
-            #         # cv2.destroyAllWindows()
+#         img = cv2.imread(img)
+#         # # global_visual_debugger(img)
+#         # cv2.imshow('image',enhance_features(img, 5, 7, False) + enhance_features(img, 2, 4, True))
+#         # cv2.waitKey(0)
+#         # cv2.destroyAllWindows()
 
-            #         im = cv2.imread( os.path.join("dataset", "training", "1", "ec50k_00010001.jpg"))
-            #         visual_debug_orb(img, im)
-            #         pass
-            # # ==============================================================================
+#         im = cv2.imread( os.path.join("dataset", "training", "1", "ec50k_00010001.jpg"))
+#         visual_debug_orb(img, im)
+#         pass
+# # ==============================================================================
 
 
-            # %%
-            # counter = 0
-            # all_files = Training.get_files()
-            # for img in tqdm(Training.parse_image_path(color=False), total=Training.len_files(),  desc="Display all images"):
 
-                
+# counter = 0
+# all_files = Training.get_files()
+# for img in tqdm(Training.parse_image_path(color=False), total=Training.len_files(),  desc="Display all images"):
+
+            

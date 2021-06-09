@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# %%
 from intro import greetings
-import argh
 import numpy as np
 import cv2
 from dataset import Dataset 
@@ -13,11 +11,10 @@ import json
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from pprint import pprint
 from sklearn.cluster import KMeans 
-import plotly as plt
+
 from scipy.spatial import distance
 import time
-
-# %%
+import requests
 # displays the script title and the names of the partecipants
 greetings()
 
@@ -25,11 +22,11 @@ greetings()
 
 # parsing directory and instances of dataset class
 
-# %%
 start = time.time()
 def challenge():
-    data_path = 'dataset' # TODO dare la scelta all'utente di caricare il path che vuole
-    training_path = os.path.join(data_path, 'training')
+    data_path = 'exam' 
+    # training_path   = os.path.join(data_path, 'training')
+    training_path   = os.path.join(data_path, 'validation', 'gallery')
 
     validation_path = os.path.join(data_path, 'validation')
     gallery_path    = os.path.join(validation_path, 'gallery')
@@ -61,7 +58,6 @@ def challenge():
 
 
     len(gallery.get_files())
-    # %%
     # we define the feature extractor providing the model
     extractor = img_distances.FeatureExtractor(feature_extractor = features,
                                 model = kmeans,
@@ -83,12 +79,10 @@ def challenge():
     gallery_features = extractor.extract_features(all_gallery_path)
     gallery_features = extractor.scale_features(gallery_features)
 
-    # TODO mettiamo uno switch per il debug altrimenti lo togliamo
     print(" "* 100) # clear the buffer of  end="\r"
     print(f"gallery feature shape:{gallery_features.shape}, query features shape:{query_features.shape}")
     mahal_dist = distance.cdist(query_features, gallery_features, 'mahalanobis')
     print('Mahalanobis distance{}'.format(mahal_dist.shape))
-    # %%
 
     # we sort matched indices
     indices = np.argsort(mahal_dist, axis=-1)
@@ -119,8 +113,8 @@ def challenge():
     matches = dict()
     query_index = [2,3]
     top_k = 10
-    #for i in range(indices.shape[0]):
-    for i in query_index:
+    for i in range(indices.shape[0]):
+    # for i in query_index:
         gallery_matches = []
         for j in range(0,top_k):
             img_path = all_gallery_path[indices[i][j]]
@@ -132,9 +126,9 @@ def challenge():
 
 
     group["images"] = matches
-    #print(group)
+    
     # submit function
-
+    
     def submit(results, url):
         res = json.dumps(results)
         response = requests.post(url, res)
@@ -142,38 +136,14 @@ def challenge():
         print("accuracy is {}".format(result['results']))
 
 
-    url = "http://kamino.disi.unitn.it:3001/results/"
+
+    url = "http://ec2-18-191-24-254.us-east-2.compute.amazonaws.com/competition/"
     
-    submit(group, url)
+    
+    # submit(group, url) 
 
     
-    # %%
-    gallery_classes = gallery.get_class()
-    query_classes = gallery.get_class()
-    finalmatrix = np.zeros(indices.shape)
 
-    """
-    for i in range(indices.shape[0]):#iterate over rows: qry
-        gallery_matches = []
-        for j in range(indices.shape[1]):#iterate over columns
-            # Get only the topmost matches
-
-            gall_img_class = gallery_classes[indices[i][j]]  
-            gallery_matches.append(gall_img_class)
-
-
-        # if finalmatrix.size == 0:
-        if i == 0:
-            finalmatrix = np.array(gallery_matches)  #append here the line to the matrix
-        else:
-            finalmatrix =np.vstack(gallery_matches)
-    """   
-
-    for i in range(indices.shape[0]):#iterate over rows: qry
-        gallery_matches = []
-        for j in range(indices.shape[1]):#iterate over columns
-            finalmatrix[i][j] = gallery_classes[indices[i][j]] 
-    print(finalmatrix) 
 
 
 if __name__ == "__main__":
