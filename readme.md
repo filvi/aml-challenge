@@ -7,6 +7,8 @@ This repo is for the AML challenge for Master in Data Science (2021).
 - Jacopo Mocellin
 - Tamara Quaranta
 - Filippo Vicari
+## Deeplearning Solution
+For dataset and download please visit [this link ](https://roosters-aml-challenge.netlify.app/)
 
 ## Requirements
 All the requirements are in the requirements.txt file, which can be easily installed with `pip install -r requirements.txt`
